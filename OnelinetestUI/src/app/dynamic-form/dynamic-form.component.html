@@ -1,0 +1,114 @@
+<h2>Create Dynamic Form</h2>
+
+<form [formGroup]="formBuilderForm">
+
+  <div class="form-grid">
+
+    <mat-form-field appearance="outline">
+      <mat-label>Form Title</mat-label>
+      <input matInput formControlName="formTitle">
+      <mat-error *ngIf="formBuilderForm.get('formTitle')?.touched &&
+               formBuilderForm.get('formTitle')?.hasError('required')">
+        Form Title is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Form Description</mat-label>
+      <input matInput formControlName="formDescription">
+      <mat-error *ngIf="formBuilderForm.get('formDescription')?.touched &&
+               formBuilderForm.get('formDescription')?.hasError('required')">
+        Form Description is required
+      </mat-error>
+    </mat-form-field>
+
+  </div>
+
+  <div formArrayName="fields">
+
+    <div *ngFor="let field of fields.controls; let i = index">
+
+      <div *ngIf="field.get('isActive')?.value !== false" [formGroupName]="i" class="field-box">
+        <!-- Question -->
+        <mat-form-field appearance="outline">
+          <mat-label>Question {{i + 1}}</mat-label>
+          <input matInput formControlName="label">
+
+          <mat-error *ngIf="field.get('label')?.touched && field.get('label')?.invalid">
+            Question is required
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Field Type -->
+        <mat-form-field appearance="outline">
+          <mat-label>Field Type</mat-label>
+          <mat-select formControlName="type">
+            <mat-option *ngFor="let t of fieldTypes" [value]="t.value">
+              {{ t.label }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="field.get('type')?.touched && field.get('type')?.invalid">
+            Type is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field *ngIf="field.get('type')?.value === 'text'" appearance="outline">
+
+          <mat-label>Default Value</mat-label>
+          <input matInput formControlName="defaultValue">
+        </mat-form-field>
+
+        <!-- Required -->
+        <mat-checkbox formControlName="required">Required</mat-checkbox>
+
+        <!-- Options -->
+        <div *ngIf="showOptions(i)" formArrayName="options" class="options-box">
+
+          <h4>Options</h4>
+
+          <div *ngFor="let opt of getOptionsControls(i); let j = index" [formGroupName]="j">
+            <mat-form-field appearance="outline">
+              <mat-label>Option</mat-label>
+              <input matInput formControlName="value">
+              <mat-error *ngIf="opt.get('value')?.touched &&
+                   opt.get('value')?.hasError('required')">
+                Option value is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-checkbox *ngIf="field.get('type')?.value !== 'radio'" formControlName="isDefault"
+              (change)="onDefaultOptionChange(i, j)">
+              Default
+            </mat-checkbox>
+
+            <button mat-icon-button color="warn" (click)="removeOption(i, j)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+
+          <button mat-stroked-button color="primary" (click)="addOption(i)">
+            + Add Option
+          </button>
+        </div>
+
+        <button mat-stroked-button color="warn" (click)="removeField(i)">
+          Remove Question
+        </button>
+
+        <hr />
+      </div>
+    </div>
+
+  </div>
+
+  <button mat-raised-button color="primary" (click)="addField()">
+    + Add Question
+  </button>
+
+  <br><br>
+
+  <button mat-raised-button color="accent" (click)="saveForm()">
+    Save Form
+  </button>
+
+</form>

@@ -1,0 +1,44 @@
+<h2>Form Builder Dashboard</h2>
+
+<mat-card class="dashboard-card">
+
+  <mat-card-title>Create a New Form</mat-card-title>
+
+  <mat-card-content>
+    Build dynamic forms with custom fields and conditional logic.
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button
+      mat-raised-button
+      color="primary"
+      routerLink="/create-form">
+      + Create Form
+    </button>
+  </mat-card-actions>
+
+  <mat-card>
+    <mat-card-title>Fill Form</mat-card-title>
+    <mat-card-content>
+      Select and fill an existing form
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="accent" routerLink="/fill-form">
+        Fill Form
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+  <mat-card>
+    <mat-card-title>Fill Form</mat-card-title>
+    <mat-card-content>
+      View past submitted Forms 
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="accent" routerLink="/submissions">
+        Submitted Forms
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</mat-card>
+

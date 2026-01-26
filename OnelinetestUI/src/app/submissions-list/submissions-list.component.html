@@ -1,0 +1,27 @@
+<h2>Form Submissions</h2>
+
+<mat-card *ngFor="let s of submissions" class="mb-3">
+
+  <mat-card-title>{{ s.formName }}</mat-card-title>
+
+  <mat-card-content>
+    <p><strong>Submitted On:</strong> {{ s.submittedOn | date:'short' }}</p>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="viewSubmission(s.submissionId)">
+      View
+    </button>
+
+    <button
+      mat-raised-button
+      color="accent"
+      (click)="editSubmission(s.submissionId)">
+      Edit
+    </button>
+  </mat-card-actions>
+
+</mat-card>

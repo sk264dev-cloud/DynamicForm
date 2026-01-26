@@ -1,0 +1,15 @@
+.full-width {
+    width: 100%;
+  }
+  
+  .field-box {
+    padding: 16px;
+    border: 1px solid #ddd;
+    margin-bottom: 16px;
+    border-radius: 6px;
+  }
+  
+  .options-box {
+    margin-left: 20px;
+  }
+  

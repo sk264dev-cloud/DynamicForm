@@ -1,0 +1,11 @@
+.radio-label {
+    font-weight: 500;
+    display: block;
+    margin-bottom: 4px;
+  }
+  
+  .required-star {
+    color: red;
+    margin-left: 4px;
+  }
+  

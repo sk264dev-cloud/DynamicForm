@@ -1,0 +1,26 @@
+<h2>Select Form</h2>
+
+<mat-card *ngFor="let form of forms" class="form-card">
+  <mat-card-title>{{ form.formName }}</mat-card-title>
+<!-- <mat-card-content>
+    {{ form.description }}
+  </mat-card-content>--> 
+  <mat-card-actions>
+    <button mat-raised-button color="primary"
+            (click)="selectForm(form.formId)">
+      Fill Form
+    </button>
+  </mat-card-actions>
+
+  <button
+  mat-icon-button
+  color="warn"  (click)="editForm(form.formId)">
+  <mat-icon>edit</mat-icon>
+</button>
+
+<button
+mat-icon-button
+color="warn" (click)="deleteForm(form.formId)">
+<mat-icon>delete</mat-icon>
+</button>
+</mat-card>

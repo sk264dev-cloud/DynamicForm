@@ -1,0 +1,62 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+
+    <div *ngFor="let field of fields">
+  
+      <!-- TEXT -->
+      <mat-form-field *ngIf="field.fieldType === 'text'" appearance="outline">
+        <mat-label>{{ field.fieldLabel }}</mat-label>
+        <input matInput [formControlName]="field.fieldId">
+        <mat-error
+        *ngIf="form.get(field.fieldId.toString())?.touched &&
+               form.get(field.fieldId.toString())?.hasError('required')">
+        This field is required
+      </mat-error>
+      </mat-form-field>
+  
+      <!-- DROPDOWN -->
+      <mat-form-field *ngIf="field.fieldType === 'dropdown'" appearance="outline">
+        <mat-label>{{ field.fieldLabel }}</mat-label>
+        <mat-select [formControlName]="field.fieldId">
+          <mat-option *ngFor="let opt of field.optionsJson | jsonParse"
+                      [value]="opt">
+            {{ opt }}
+          </mat-option>
+        </mat-select>
+        <mat-error
+        *ngIf="form.get(field.fieldId.toString())?.touched &&
+               form.get(field.fieldId.toString())?.hasError('required')">
+        This field is required
+      </mat-error>
+      </mat-form-field>
+
+  
+         <!-- RADIO -->
+         <!-- <mat-form-field *ngIf="field.fieldType === 'radio'" appearance="outline"> -->
+          <div *ngIf="field.fieldType === 'radio'" appearance="outline">
+          <mat-label>{{ field.fieldLabel }} <span *ngIf="field.isRequired" class="required-star">*</span> :</mat-label>
+
+          <mat-radio-group [formControlName]="field.fieldId">
+          <mat-radio-button
+            *ngFor="let opt of field.optionsJson | jsonParse"
+            [value]="opt">
+            {{ opt }}
+          </mat-radio-button>
+        </mat-radio-group>
+        <mat-error
+        *ngIf="form.get(field.fieldId.toString())?.touched &&
+               form.get(field.fieldId.toString())?.hasError('required')">
+        This field is required
+      </mat-error>
+        </div>
+        <!-- </mat-form-field> -->
+      <!-- RADIO -->
+      
+  
+    </div>
+  
+    <button mat-raised-button color="primary" type="submit" [disabled]="isViewMode">
+      Submit
+    </button>
+  
+  </form>
+  
