@@ -1,0 +1,73 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Interview\\OnelineTest\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{48C4853E-4CC4-4CEF-D678-21C1771988D8}|OnelineTest\\OnelineTest.csproj|d:\\interview\\onelinetest\\onelinetest\\services\\dynamicformservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{48C4853E-4CC4-4CEF-D678-21C1771988D8}|OnelineTest\\OnelineTest.csproj|solutionrelative:onelinetest\\services\\dynamicformservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{48C4853E-4CC4-4CEF-D678-21C1771988D8}|OnelineTest\\OnelineTest.csproj|d:\\interview\\onelinetest\\onelinetest\\controllers\\dynamicformcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{48C4853E-4CC4-4CEF-D678-21C1771988D8}|OnelineTest\\OnelineTest.csproj|solutionrelative:onelinetest\\controllers\\dynamicformcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{48C4853E-4CC4-4CEF-D678-21C1771988D8}|OnelineTest\\OnelineTest.csproj|d:\\interview\\onelinetest\\onelinetest\\dto\\createdynamicformdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{48C4853E-4CC4-4CEF-D678-21C1771988D8}|OnelineTest\\OnelineTest.csproj|solutionrelative:onelinetest\\dto\\createdynamicformdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CreateDynamicFormDTO.cs",
+              "DocumentMoniker": "D:\\Interview\\OnelineTest\\OnelineTest\\Dto\\CreateDynamicFormDTO.cs",
+              "RelativeDocumentMoniker": "OnelineTest\\Dto\\CreateDynamicFormDTO.cs",
+              "ToolTip": "D:\\Interview\\OnelineTest\\OnelineTest\\Dto\\CreateDynamicFormDTO.cs",
+              "RelativeToolTip": "OnelineTest\\Dto\\CreateDynamicFormDTO.cs",
+              "ViewState": "AgIAAE8AAAAAAAAAAADwv1YAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-25T10:39:26.891Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "DynamicFormService.cs",
+              "DocumentMoniker": "D:\\Interview\\OnelineTest\\OnelineTest\\Services\\DynamicFormService.cs",
+              "RelativeDocumentMoniker": "OnelineTest\\Services\\DynamicFormService.cs",
+              "ToolTip": "D:\\Interview\\OnelineTest\\OnelineTest\\Services\\DynamicFormService.cs",
+              "RelativeToolTip": "OnelineTest\\Services\\DynamicFormService.cs",
+              "ViewState": "AgIAANkAAAAAAAAAAAAmwOAAAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-23T16:09:01.063Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "DynamicFormController.cs",
+              "DocumentMoniker": "D:\\Interview\\OnelineTest\\OnelineTest\\Controllers\\DynamicFormController.cs",
+              "RelativeDocumentMoniker": "OnelineTest\\Controllers\\DynamicFormController.cs",
+              "ToolTip": "D:\\Interview\\OnelineTest\\OnelineTest\\Controllers\\DynamicFormController.cs",
+              "RelativeToolTip": "OnelineTest\\Controllers\\DynamicFormController.cs",
+              "ViewState": "AgIAACAAAAAAAAAAAAAgwCkAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-23T16:03:31.914Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
