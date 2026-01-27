@@ -23,12 +23,15 @@
     }
     public class FieldConditionDto
     {
+        public int ConditionId { get; set; }
+        public int SourceFieldId { get; set; }
         public int SourceFieldIndex { get; set; }   // index from Fields list
+        public int TargetFieldId { get; set; }
         public int TargetFieldIndex { get; set; }
-
         public string Operator { get; set; }        // equals, gt, lt
         public string ComparisonValue { get; set; }
         public string Action { get; set; }          // show / hide
+        public bool IsActive { get; set; } = true;
     }
     public class FormResponseDto
     {
@@ -53,11 +56,13 @@
 
     public class FieldConditionResponseDto
     {
+        public int ConditionId { get; set; }
         public int SourceFieldId { get; set; }
         public int TargetFieldId { get; set; }
         public string Operator { get; set; }
         public string ComparisonValue { get; set; }
         public string Action { get; set; }
+        public bool IsActive { get; set; }
     }
     public class FormListDto
     {

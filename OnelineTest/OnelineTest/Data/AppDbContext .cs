@@ -104,6 +104,9 @@ namespace OnelineTest.Data
                     .IsRequired()
                     .HasMaxLength(20);
 
+                entity.Property(e => e.IsActive)
+                    .HasDefaultValue(true);
+
                 entity.HasOne(e => e.Form)
            .WithMany()
            .HasForeignKey(e => e.FormId)

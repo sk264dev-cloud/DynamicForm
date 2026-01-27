@@ -20,6 +20,24 @@ export class DynamicFormComponent  implements OnInit {
     { value: 'dropdown', label: 'Dropdown' }
   ];
 
+  conditionOperators = [
+    { value: 'equals', label: '=' },
+    { value: 'notEquals', label: '!=' },
+    { value: 'gt', label: '>' },
+    { value: 'lt', label: '<' },
+    { value: 'gte', label: '>=' },
+    { value: 'lte', label: '<=' }
+  ];
+  
+  conditionActions = [
+    { value: 'show', label: 'Show' },
+    { value: 'hide', label: 'Hide' },
+    { value: 'disable', label: 'Disable' },
+    { value: 'empty_disable', label: 'Empty & Disable' },
+    { value: 'disable_default', label: 'Disable & Default Value' }
+  ];
+  
+
   constructor(private fb: FormBuilder,private dynamicFormService: DynamicFormService
     ,private router: Router,
     private route: ActivatedRoute
@@ -31,7 +49,8 @@ export class DynamicFormComponent  implements OnInit {
     this.formBuilderForm = this.fb.group({
       formTitle: ['', Validators.required],
       formDescription: ['', Validators.required],
-      fields: this.fb.array([])
+      fields: this.fb.array([]),
+      conditions: this.fb.array([]) 
     });
   }
 
@@ -48,6 +67,10 @@ export class DynamicFormComponent  implements OnInit {
 
   get fields(): FormArray {
     return this.formBuilderForm.get('fields') as FormArray;
+  }
+
+  get conditions(): FormArray {
+    return this.formBuilderForm.get('conditions') as FormArray;
   }
 
   addField() {
@@ -98,6 +121,76 @@ export class DynamicFormComponent  implements OnInit {
     this.fields.removeAt(index);
   }
   }
+
+  addCondition(targetIndex: number) {
+    const invalidCond = this.conditions.controls.find(c => {
+      const fg = c as FormGroup;
+  
+      if (fg.get('isActive')?.value === false) return false;
+  
+      const sameTarget =
+        fg.get('targetFieldIndex')?.value === targetIndex ||
+        fg.get('targetFieldId')?.value ===
+          this.fields.at(targetIndex)?.get('fieldId')?.value;
+  
+      if (!sameTarget) return false;
+  
+      const hasSource =
+        fg.get('sourceFieldId')?.value ||
+        fg.get('sourceFieldIndex')?.value !== null;
+  
+      return !hasSource ||
+             fg.get('operator')?.invalid ||
+             fg.get('action')?.invalid;
+    });
+
+    const targetField = this.fields.at(targetIndex);
+  
+    const targetFieldId = targetField.get('fieldId')?.value || null;
+  
+    this.conditions.push(
+      this.fb.group({
+        conditionId: [0],
+        sourceFieldId: [null],
+        sourceFieldIndex: [null],
+  
+        targetFieldId: [targetFieldId],
+        targetFieldIndex: targetFieldId ? null : targetIndex,
+  
+        operator: ['equals', Validators.required],
+        comparisonValue: ['', Validators.required],
+        action: ['show', Validators.required],
+        isActive: [true]
+      })
+    );
+  }
+  
+  removeCondition(index: number) {
+    const cond = this.conditions.at(index) as FormGroup;
+  
+    if (this.isEditMode) {
+      cond.get('isActive')?.setValue(false);
+    } else {
+      this.conditions.removeAt(index);
+    }
+  }
+
+  onSourceFieldChange(val: any, conditionIndex: number) {
+    const cond = this.conditions.at(conditionIndex) as FormGroup;
+  
+    if (val?.id && val.id > 0) {
+      cond.patchValue({
+        sourceFieldId: val.id,
+        sourceFieldIndex: null
+      });
+    } else {
+      cond.patchValue({
+        sourceFieldId: 0,
+        sourceFieldIndex: val.index
+      });
+    }
+  }
+  
 
   addOption(fieldIndex: number) {
     const options = this.fields.at(fieldIndex).get('options') as FormArray;
@@ -171,6 +264,25 @@ export class DynamicFormComponent  implements OnInit {
       return;
     }
   }
+
+  for (let i = 0; i < this.conditions.length; i++) {
+    const cond = this.conditions.at(i) as FormGroup;
+  
+    if (cond.get('isActive')?.value === false) continue;
+  
+    const hasSource =
+      cond.get('sourceFieldId')?.value ||
+      cond.get('sourceFieldIndex')?.value !== null;
+  
+    if (!hasSource ||
+        cond.get('operator')?.invalid ||
+        cond.get('action')?.invalid) {
+  
+      cond.markAllAsTouched();
+      alert(`Please complete conditions of all questions`);
+      return;
+    }
+  }
     const payload = this.buildApiPayload();
 
     this.dynamicFormService.createForm(payload)
@@ -197,6 +309,32 @@ export class DynamicFormComponent  implements OnInit {
     return options ? (options as any).controls : [];
   }
 
+  getSourceFieldValue(conditionIndex: number): any {
+    const cond = this.conditions.at(conditionIndex) as FormGroup;
+    const sourceFieldId = cond.get('sourceFieldId')?.value;
+    const sourceFieldIndex = cond.get('sourceFieldIndex')?.value;
+
+    if (sourceFieldId && sourceFieldId > 0) {
+      // Find the field index by fieldId
+      const fieldIndex = this.fields.controls.findIndex(
+        f => f.get('fieldId')?.value === sourceFieldId
+      );
+      if (fieldIndex !== -1) {
+        return { id: sourceFieldId, index: fieldIndex };
+      }
+    } else if (sourceFieldIndex !== null && sourceFieldIndex !== undefined) {
+      const field = this.fields.at(sourceFieldIndex);
+      return { id: field.get('fieldId')?.value || 0, index: sourceFieldIndex };
+    }
+
+    return null;
+  }
+
+  compareSourceFields(f1: any, f2: any): boolean {
+    if (!f1 || !f2) return f1 === f2;
+    return f1.id === f2.id && f1.index === f2.index;
+  }
+
   private buildApiPayload() {
     return {
       formId: this.isEditMode ? this.formId : 0,
@@ -218,8 +356,17 @@ export class DynamicFormComponent  implements OnInit {
         sortOrder: index + 1,
         isActive: f.isActive ?? true
       })),
-
-      conditions: []   
+      conditions: this.formBuilderForm.value.conditions?.map((c: any) => ({
+        conditionId: c.conditionId ?? 0,
+        sourceFieldIndex: c.sourceFieldIndex ?? 0,
+        sourceFieldId: c.sourceFieldId ?? 0,
+        targetFieldIndex: c.targetFieldIndex ?? 0,
+        targetFieldId: c.targetFieldId ?? 0,
+        operator: c.operator,
+        comparisonValue: c.comparisonValue,
+        action: c.action,
+        IsActive : c.isActive
+      }))
     };
   }
 
@@ -245,6 +392,47 @@ export class DynamicFormComponent  implements OnInit {
         );
       });
   
+      res.conditions?.forEach((c: any) => {
+        // Find source field index by sourceFieldId
+        let sourceFieldIndex = null;
+        if (c.sourceFieldId && c.sourceFieldId > 0) {
+          const fieldIndex = this.fields.controls.findIndex(
+            f => f.get('fieldId')?.value === c.sourceFieldId
+          );
+          if (fieldIndex !== -1) {
+            sourceFieldIndex = fieldIndex;
+          }
+        } else if (c.sourceFieldIndex !== null && c.sourceFieldIndex !== undefined) {
+          sourceFieldIndex = c.sourceFieldIndex;
+        }
+
+        // Find target field index by targetFieldId
+        let targetFieldIndex = null;
+        if (c.targetFieldId && c.targetFieldId > 0) {
+          const fieldIndex = this.fields.controls.findIndex(
+            f => f.get('fieldId')?.value === c.targetFieldId
+          );
+          if (fieldIndex !== -1) {
+            targetFieldIndex = fieldIndex;
+          }
+        } else if (c.targetFieldIndex !== null && c.targetFieldIndex !== undefined) {
+          targetFieldIndex = c.targetFieldIndex;
+        }
+
+        this.conditions.push(
+          this.fb.group({
+            conditionId: c.conditionId,
+            sourceFieldId: [c.sourceFieldId || null],
+            sourceFieldIndex: [sourceFieldIndex],
+            targetFieldId: [c.targetFieldId, Validators.required],
+            targetFieldIndex: [targetFieldIndex],
+            operator: [c.operator, Validators.required],
+            comparisonValue: [c.comparisonValue, Validators.required],
+            action: [c.action, Validators.required],
+            isActive: [true]
+          })
+        );
+      });
     });
   }
   buildOptions(field: any): FormArray {

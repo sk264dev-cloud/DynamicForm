@@ -16,5 +16,6 @@ namespace OnelineTest.Model
         public string Operator { get; set; }        // equals, gt, lt
         public string ComparisonValue { get; set; }
         public string Action { get; set; }          // show / hide
+        public bool IsActive { get; set; }
     }
 }

@@ -91,6 +91,106 @@
           </button>
         </div>
 
+        <div class="conditions-box" [formGroup]="formBuilderForm">
+
+          <div formArrayName="conditions">
+        
+            <h4>Conditions</h4>
+        
+            <ng-container *ngFor="let cond of conditions.controls; let c = index">
+            <div *ngIf="cond.get('isActive')?.value !== false &&
+            (
+              (cond.get('targetFieldId')?.value &&
+               cond.get('targetFieldId')?.value === field.get('fieldId')?.value)
+              ||
+              (cond.get('targetFieldIndex')?.value === i)
+            )"  
+            [formGroupName]="c"
+            class="condition-row">
+                <!-- SOURCE FIELD -->
+                <mat-form-field appearance="outline">
+                  <mat-label>Source Field</mat-label>
+                  <mat-select 
+                    [value]="getSourceFieldValue(c)" 
+                    [compareWith]="compareSourceFields"
+                    (selectionChange)="onSourceFieldChange($event.value, c)">
+                    <mat-option
+                      *ngFor="let f of fields.controls; let fi = index"
+                      [value]="{ id: f.get('fieldId')?.value || 0, index: fi }"
+                      [disabled]="fi === i">
+                      {{ f.get('label')?.value || ('Question ' + (fi + 1)) }}
+                    </mat-option>
+                  </mat-select>
+
+                  <mat-error
+                  *ngIf="
+                    !cond.get('sourceFieldId')?.value &&
+                    cond.get('sourceFieldIndex')?.value === null &&
+                    (cond.touched || cond.dirty)
+                  ">
+                  Source field is required
+                </mat-error>
+                </mat-form-field>
+        
+                <!-- OPERATOR -->
+                <mat-form-field appearance="outline">
+                  <mat-label>Operator</mat-label>
+                  <mat-select formControlName="operator">
+                    <mat-option *ngFor="let op of conditionOperators" [value]="op.value">
+                      {{ op.label }}
+                    </mat-option>
+                  </mat-select>
+
+                  <mat-error *ngIf="cond.get('operator')?.touched &&
+                  cond.get('operator')?.hasError('required')">
+                    Operator is required
+                  </mat-error>
+                </mat-form-field>
+        
+                <!-- COMPARISON VALUE -->
+                <mat-form-field appearance="outline">
+                  <mat-label>Comparison Value</mat-label>
+                  <input matInput formControlName="comparisonValue">
+                </mat-form-field>
+        
+                <!-- ACTION -->
+                <mat-form-field appearance="outline">
+                  <mat-label>Action</mat-label>
+                  <mat-select formControlName="action">
+                    <mat-option *ngFor="let a of conditionActions" [value]="a.value">
+                      {{ a.label }}
+                    </mat-option>
+                  </mat-select>
+
+                  <mat-error *ngIf="cond.get('action')?.touched &&
+                                    cond.get('action')?.hasError('required')">
+                    Action is required
+                  </mat-error>
+                </mat-form-field>
+        
+                <button
+                  mat-icon-button
+                  color="warn"
+                  (click)="removeCondition(c)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+        
+              
+            </div>
+        
+            </ng-container>
+        
+            <button
+              mat-stroked-button
+              color="primary"
+              (click)="addCondition(i)">
+              + Add Condition
+            </button>
+        
+          </div>
+        
+        </div>
+        
         <button mat-stroked-button color="warn" (click)="removeField(i)">
           Remove Question
         </button>

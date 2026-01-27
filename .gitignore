@@ -1,41 +1,35 @@
-# Node.js - for both api and ui folders
+# Node.js
 node_modules/
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
-# Angular (ui folder)
+# Angular
 dist/
 tmp/
 .angular/
-.cache/
 
-# IDE & Editor
-.vscode/
-.idea/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.swp
-*.swo
-
-# Visual Studio Index Files
+# Visual Studio
+**/.vs/
+**/bin/
+**/obj/
+**/*.user
+**/*.suo
 *.vsidx
+/OnelineTest/.vs/
 
-# Environment variables
+# .NET
+**/Debug/
+**/Release/
+**/packages/
+*.nupkg
+
+# Environment
 .env
 .env.local
-.env.*.local
 
-# OS generated files
+# IDE
+.vscode/
+.idea/
+
+# OS
 .DS_Store
-.DS_Store?
-._*
 Thumbs.db
-ehthumbs.db
-Desktop.ini
-
-# Logs
-logs/
-*.log

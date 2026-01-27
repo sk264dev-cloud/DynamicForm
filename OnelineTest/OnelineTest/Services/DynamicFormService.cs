@@ -20,7 +20,7 @@ namespace OnelineTest.Services
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                var returnObj = new FormMDL();
+                int returnObj = 0;
                 if (request.Formid == 0)
                 {
                     var form = new FormMDL
@@ -66,7 +66,7 @@ namespace OnelineTest.Services
                         _context.FieldConditions.AddRange(conditions);
                         await _context.SaveChangesAsync();
                     }
-                    returnObj = form;
+                    returnObj = form.FormId;
                 }
                 else
                 {
@@ -104,18 +104,20 @@ namespace OnelineTest.Services
                     {
                         var conditions = request.Conditions.Select(c => new FieldConditionsMDL
                         {
+                            ConditionId = c.ConditionId,
                             FormId = form.FormId,
-                            SourceFieldId = fields[c.SourceFieldIndex].FieldId,
-                            TargetFieldId = fields[c.TargetFieldIndex].FieldId,
+                            SourceFieldId = c.SourceFieldId > 0 ? c.SourceFieldId : fields[c.SourceFieldIndex].FieldId,
+                            TargetFieldId = c.TargetFieldId > 0 ? c.TargetFieldId : fields[c.TargetFieldIndex].FieldId,
                             Operator = c.Operator,
                             ComparisonValue = c.ComparisonValue,
-                            Action = c.Action
+                            Action = c.Action,
+                            IsActive = c.IsActive
                         });
 
                         _context.FieldConditions.UpdateRange(conditions);
                         await _context.SaveChangesAsync();
                     }
-                    
+                    returnObj = form.FormId;
                 }
                 await transaction.CommitAsync();
                 return new OkObjectResult(returnObj);
@@ -129,45 +131,54 @@ namespace OnelineTest.Services
 
         public async Task<IActionResult> GetFormById(int formId)
         {
-            var form = await _context.Forms
-                .Where(f => f.FormId == formId && f.IsActive)
-                .Select(f => new FormResponseDto
-                {
-                    FormId = f.FormId,
-                    FormName = f.FormName,
-                    Description = f.Description,
-                    Fields = _context.FormFields
-                        .Where(ff => ff.FormId == f.FormId && ff.IsActive)
-                        .OrderBy(ff => ff.SortOrder)
-                        .Select(ff => new FormFieldResponseDto
-                        {
-                            FieldId = ff.FieldId,
-                            FieldLabel = ff.FieldLabel,
-                            FieldType = ff.FieldType,
-                            IsRequired = ff.IsRequired,
-                            DefaultValue = ff.DefaultValue,
-                            OptionsJson = ff.OptionsJson,
-                            SortOrder = ff.SortOrder,
-                            IsActive = ff.IsActive,
-                        }).ToList(),
+            try
+            {
+                var form = await _context.Forms
+                    .Where(f => f.FormId == formId && f.IsActive)
+                    .Select(f => new FormResponseDto
+                    {
+                        FormId = f.FormId,
+                        FormName = f.FormName,
+                        Description = f.Description,
+                        Fields = _context.FormFields
+                            .Where(ff => ff.FormId == f.FormId && ff.IsActive)
+                            .OrderBy(ff => ff.SortOrder)
+                            .Select(ff => new FormFieldResponseDto
+                            {
+                                FieldId = ff.FieldId,
+                                FieldLabel = ff.FieldLabel,
+                                FieldType = ff.FieldType,
+                                IsRequired = ff.IsRequired,
+                                DefaultValue = ff.DefaultValue,
+                                OptionsJson = ff.OptionsJson,
+                                SortOrder = ff.SortOrder,
+                                IsActive = ff.IsActive,
+                            }).ToList(),
 
-                    Conditions = _context.FieldConditions
-                        .Where(fc => fc.FormId == f.FormId)
-                        .Select(fc => new FieldConditionResponseDto
-                        {
-                            SourceFieldId = fc.SourceFieldId,
-                            TargetFieldId = fc.TargetFieldId,
-                            Operator = fc.Operator,
-                            ComparisonValue = fc.ComparisonValue,
-                            Action = fc.Action
-                        }).ToList()
-                })
-                .FirstOrDefaultAsync();
+                        Conditions = _context.FieldConditions
+                            .Where(fc => fc.FormId == f.FormId && fc.IsActive)
+                            .Select(fc => new FieldConditionResponseDto
+                            {
+                                ConditionId = fc.ConditionId,
+                                SourceFieldId = fc.SourceFieldId,
+                                TargetFieldId = fc.TargetFieldId,
+                                Operator = fc.Operator,
+                                ComparisonValue = fc.ComparisonValue,
+                                Action = fc.Action,
+                                IsActive = fc.IsActive
+                            }).ToList()
+                    })
+                    .FirstOrDefaultAsync();
 
-            if (form == null)
+                if (form == null)
+                    return new NotFoundResult();
+
+                return new OkObjectResult(form);
+            }
+            catch(Exception ex)
+            {
                 return new NotFoundResult();
-
-            return new OkObjectResult(form);
+            }
         }
 
         public async Task<IActionResult> GetAllForms()
