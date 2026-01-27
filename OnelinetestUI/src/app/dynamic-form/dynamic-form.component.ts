@@ -23,18 +23,17 @@ export class DynamicFormComponent  implements OnInit {
   conditionOperators = [
     { value: 'equals', label: '=' },
     { value: 'notEquals', label: '!=' },
-    { value: 'gt', label: '>' },
+    /*{ value: 'gt', label: '>' },
     { value: 'lt', label: '<' },
     { value: 'gte', label: '>=' },
-    { value: 'lte', label: '<=' }
+    { value: 'lte', label: '<=' }*/
   ];
   
   conditionActions = [
     { value: 'show', label: 'Show' },
     { value: 'hide', label: 'Hide' },
-    { value: 'disable', label: 'Disable' },
     { value: 'empty_disable', label: 'Empty & Disable' },
-    { value: 'disable_default', label: 'Disable & Default Value' }
+    //{ value: 'disable_default', label: 'Disable & Default Value' }
   ];
   
 

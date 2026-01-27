@@ -78,6 +78,7 @@
         public DateTime? SubmittedOn { get; set; }
 
         public List<FormFieldValueDto> Values { get; set; }
+        public List<FieldConditionResponseDto>? Conditions { get; set; }
     }
     public class FormFieldValueDto
     {

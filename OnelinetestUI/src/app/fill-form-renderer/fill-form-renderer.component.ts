@@ -18,6 +18,9 @@ export class FillFormRendererComponent implements OnInit {
   isEditMode = false;
   submissionId = 0;
 
+  conditions: any[] = [];
+  hiddenFields = new Set<number>();
+
   constructor(
     private route: ActivatedRoute,
     private fb: FormBuilder,
@@ -45,7 +48,9 @@ export class FillFormRendererComponent implements OnInit {
     this.dynamicFormService.getFormById(this.formId).subscribe({
       next: res => {
         this.fields = res.fields;
+        this.conditions = (res.conditions || []);
         this.buildForm();
+        this.registerConditionListeners();
       },
       error: err => console.error(err)
     });
@@ -137,6 +142,74 @@ export class FillFormRendererComponent implements OnInit {
       this.form = this.fb.group(group);
       if(this.isViewMode)
           this.form.disable();
+      this.conditions = (res.conditions || []);
+      this.registerConditionListeners();
     });
+    
+  }
+
+  registerConditionListeners() {
+    this.conditions.forEach(cond => {
+      const sourceControl = this.form.get(cond.sourceFieldId.toString());
+      if (!sourceControl) return;
+  
+      sourceControl.valueChanges.subscribe(val => {
+        this.evaluateCondition(cond, val);
+      });
+  
+      // 🔹 evaluate once for default value
+      this.evaluateCondition(cond, sourceControl.value);
+    });
+  }
+
+  evaluateCondition(cond: any, sourceValue: any) {
+    const targetFieldId = cond.targetFieldId;
+    const targetControl = this.form.get(targetFieldId.toString());
+    if (!targetControl) return;
+  
+    let isMatch = false;
+  
+    switch (cond.operator) {
+      case 'equals':
+        isMatch = sourceValue === cond.comparisonValue;
+        break;
+  
+      case 'notEquals':
+        isMatch = sourceValue !== cond.comparisonValue;
+        break;
+    }
+  
+    this.applyAction(cond.action, isMatch, targetFieldId, targetControl);
+  }
+
+  applyAction(
+    action: string,
+    isMatch: boolean,
+    targetFieldId: number,
+    targetControl: any
+  ) {
+    switch (action) {
+  
+      case 'hide':
+        isMatch
+          ? this.hiddenFields.add(targetFieldId)
+          : this.hiddenFields.delete(targetFieldId);
+        break;
+  
+      case 'show':
+        isMatch
+          ? this.hiddenFields.delete(targetFieldId)
+          : this.hiddenFields.add(targetFieldId);
+        break;
+  
+      case 'empty_disable':
+        if (isMatch) {
+          targetControl.setValue('');
+          targetControl.disable({ emitEvent: false });
+        } else {
+          targetControl.enable({ emitEvent: false });
+        }
+        break;
+    }
   }
 }

@@ -2,6 +2,7 @@
 
     <div *ngFor="let field of fields">
   
+      <ng-container *ngIf="!hiddenFields.has(field.fieldId)">
       <!-- TEXT -->
       <mat-form-field *ngIf="field.fieldType === 'text'" appearance="outline">
         <mat-label>{{ field.fieldLabel }}</mat-label>
@@ -51,7 +52,7 @@
         <!-- </mat-form-field> -->
       <!-- RADIO -->
       
-  
+    </ng-container>
     </div>
   
     <button mat-raised-button color="primary" type="submit" [disabled]="isViewMode">

@@ -317,7 +317,20 @@ namespace OnelineTest.Services
                             IsRequired = (bool)v.Field.IsRequired,
                             DefaultValue = v.Field.DefaultValue,
                         })
-                        .ToList()
+                        .ToList(),
+
+                          Conditions = _context.FieldConditions
+                    .Where(fc => fc.FormId == s.FormId && fc.IsActive)
+                    .Select(fc => new FieldConditionResponseDto
+                    {
+                        ConditionId = fc.ConditionId,
+                        SourceFieldId = fc.SourceFieldId,
+                        TargetFieldId = fc.TargetFieldId,
+                        Operator = fc.Operator,
+                        ComparisonValue = fc.ComparisonValue,
+                        Action = fc.Action
+                    })
+                    .ToList()
                 })
                 .FirstOrDefaultAsync();
 
