@@ -1,35 +1,111 @@
-# Node.js
-node_modules/
-npm-debug.log*
+# See http://help.github.com/ignore-files/ for more about ignoring files.
 
-# Angular
-dist/
-tmp/
-.angular/
+# Compiled output
+/dist
+/tmp
+/out-tsc
+# Only exists if Bazel was run
+/bazel-out
 
-# Visual Studio
-**/.vs/
-**/bin/
-**/obj/
-**/*.user
-**/*.suo
-*.vsidx
-/OnelineTest/.vs/
+# Dependencies
+/node_modules
 
-# .NET
-**/Debug/
-**/Release/
-**/packages/
-*.nupkg
+# Cordova
+/www
+/plugins
+/platforms
 
-# Environment
-.env
-.env.local
+# Electron
+/dist-electron
+/dist-packages
+/electron.main.js
 
-# IDE
-.vscode/
-.idea/
+# IDEs and editors
+.idea/*
+!.idea/runConfigurations/
+!.idea/codeStyleSettings.xml
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+xcuserdata/
+*.sublime-workspace
 
-# OS
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Maven
+/target
+/log
+
+# Misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+/typings
+/reports
+/src/translations/template.*
+# /src/environments/.env.*
+
+# System Files
 .DS_Store
 Thumbs.db
+
+*.swp
+*.*~
+project.lock.json
+.DS_Store
+*.pyc
+nupkg/
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+
+# Rider
+.idea/
+
+# Visual Studio
+.vs/
+
+# Fleet
+.fleet/
+
+# Code Rush
+.cr/
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+msbuild.log
+msbuild.err
+msbuild.wrn
+
+# Node.js build artifacts
+node_modules/
+package-lock.json
+package.json

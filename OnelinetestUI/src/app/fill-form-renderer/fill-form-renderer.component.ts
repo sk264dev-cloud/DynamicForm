@@ -207,7 +207,8 @@ export class FillFormRendererComponent implements OnInit {
           targetControl.setValue('');
           targetControl.disable({ emitEvent: false });
         } else {
-          targetControl.enable({ emitEvent: false });
+          if(!this.isViewMode)
+            targetControl.enable({ emitEvent: false });
         }
         break;
     }

@@ -1,63 +1,136 @@
-<form [formGroup]="form" (ngSubmit)="submit()">
-
-    <div *ngFor="let field of fields">
+<div class="container my-5">
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb mb-0">
+      <li class="breadcrumb-item text-muted">
+        Dashboard
+      </li>
   
-      <ng-container *ngIf="!hiddenFields.has(field.fieldId)">
-      <!-- TEXT -->
-      <mat-form-field *ngIf="field.fieldType === 'text'" appearance="outline">
-        <mat-label>{{ field.fieldLabel }}</mat-label>
-        <input matInput [formControlName]="field.fieldId">
-        <mat-error
-        *ngIf="form.get(field.fieldId.toString())?.touched &&
-               form.get(field.fieldId.toString())?.hasError('required')">
-        This field is required
-      </mat-error>
-      </mat-form-field>
+      <li class="breadcrumb-item text-muted">
+        {{isViewMode || isEditMode ? 'Submission List' : 'Select Form' }}
+      </li>
   
-      <!-- DROPDOWN -->
-      <mat-form-field *ngIf="field.fieldType === 'dropdown'" appearance="outline">
-        <mat-label>{{ field.fieldLabel }}</mat-label>
-        <mat-select [formControlName]="field.fieldId">
-          <mat-option *ngFor="let opt of field.optionsJson | jsonParse"
-                      [value]="opt">
-            {{ opt }}
-          </mat-option>
-        </mat-select>
-        <mat-error
-        *ngIf="form.get(field.fieldId.toString())?.touched &&
-               form.get(field.fieldId.toString())?.hasError('required')">
-        This field is required
-      </mat-error>
-      </mat-form-field>
+      <li class="breadcrumb-item active fw-semibold" aria-current="page">
+        Fill Form
+      </li>
+    </ol>
+  </nav>
+  <div class="card shadow-sm border-0">
+    <div class="card-body">
 
-  
-         <!-- RADIO -->
-         <!-- <mat-form-field *ngIf="field.fieldType === 'radio'" appearance="outline"> -->
-          <div *ngIf="field.fieldType === 'radio'" appearance="outline">
-          <mat-label>{{ field.fieldLabel }} <span *ngIf="field.isRequired" class="required-star">*</span> :</mat-label>
+      <!-- Header -->
+      <div class="mb-3 position-relative sticky-top bg-white py-3">
 
-          <mat-radio-group [formControlName]="field.fieldId">
-          <mat-radio-button
-            *ngFor="let opt of field.optionsJson | jsonParse"
-            [value]="opt">
-            {{ opt }}
-          </mat-radio-button>
-        </mat-radio-group>
-        <mat-error
-        *ngIf="form.get(field.fieldId.toString())?.touched &&
-               form.get(field.fieldId.toString())?.hasError('required')">
-        This field is required
-      </mat-error>
-        </div>
-        <!-- </mat-form-field> -->
-      <!-- RADIO -->
-      
-    </ng-container>
+        <!-- Back button -->
+        <button
+          mat-stroked-button
+          color="primary"
+          [routerLink]="isViewMode || isEditMode ? '/submissions' : '/fill-form'"
+          class="position-absolute start-0 top-0">
+          <mat-icon class="me-1">arrow_back</mat-icon>
+          {{isViewMode || isEditMode ? 'Submission List' : 'Select Form' }}
+          </button>
+
+          <div class="mb-4 text-center">
+            <h3 class="fw-bold text-primary">
+              {{ isViewMode ? 'View Form' : 'Fill Form' }}
+            </h3>
+            <p class="text-muted">
+              Please complete the form below
+            </p>
+          </div>
     </div>
-  
-    <button mat-raised-button color="primary" type="submit" [disabled]="isViewMode">
-      Submit
-    </button>
-  
-  </form>
-  
+
+      <form [formGroup]="form" (ngSubmit)="submit()">
+
+        <div class="row g-4">
+
+          <div *ngIf="fields.length === 0" class="text-center text-muted py-5">
+            No fields available in this form
+          </div>
+
+          <ng-container *ngFor="let field of fields">
+
+            <ng-container *ngIf="!hiddenFields.has(field.fieldId)">
+
+              <!-- TEXT -->
+              <div class="col-md-3" *ngIf="field.fieldType === 'text'">
+                <mat-form-field appearance="outline" class="w-100" [class.opacity-75]="isViewMode">
+                  <mat-label>{{ field.fieldLabel }}</mat-label>
+                  <input matInput [formControlName]="field.fieldId">
+                  <mat-error
+                    *ngIf="form.get(field.fieldId.toString())?.touched &&
+                           form.get(field.fieldId.toString())?.hasError('required')">
+                    This field is required
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <!-- DROPDOWN -->
+              <div class="col-md-3" *ngIf="field.fieldType === 'dropdown'">
+                <mat-form-field appearance="outline" class="w-100" [class.opacity-75]="isViewMode">
+                  <mat-label>{{ field.fieldLabel }}</mat-label>
+                  <mat-select [formControlName]="field.fieldId">
+                    <mat-option
+                      *ngFor="let opt of field.optionsJson | jsonParse"
+                      [value]="opt">
+                      {{ opt }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error
+                    *ngIf="form.get(field.fieldId.toString())?.touched &&
+                           form.get(field.fieldId.toString())?.hasError('required')">
+                    This field is required
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <!-- RADIO -->
+              <div class="col-md-12" *ngIf="field.fieldType === 'radio'">
+                <div class="border rounded p-3 bg-light">
+
+                  <label class="fw-semibold mb-2 d-block">
+                    {{ field.fieldLabel }}
+                    <span *ngIf="field.isRequired" class="text-danger">*</span>
+                  </label>
+
+                  <mat-radio-group [formControlName]="field.fieldId">
+                    <mat-radio-button
+                      class="me-4"
+                      *ngFor="let opt of field.optionsJson | jsonParse"
+                      [value]="opt">
+                      {{ opt }}
+                    </mat-radio-button>
+                  </mat-radio-group>
+
+                  <mat-error
+                    *ngIf="form.get(field.fieldId.toString())?.touched &&
+                           form.get(field.fieldId.toString())?.hasError('required')">
+                    This field is required
+                  </mat-error>
+
+                </div>
+              </div>
+
+            </ng-container>
+
+          </ng-container>
+
+        </div>
+
+        <!-- Submit Button -->
+        <div class="d-flex justify-content-end mt-4">
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="isViewMode">
+            Submit
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+</div>

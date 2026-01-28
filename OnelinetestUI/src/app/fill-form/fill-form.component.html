@@ -1,26 +1,93 @@
-<h2>Select Form</h2>
+<div class="container my-3">
 
-<mat-card *ngFor="let form of forms" class="form-card">
-  <mat-card-title>{{ form.formName }}</mat-card-title>
-<!-- <mat-card-content>
-    {{ form.description }}
-  </mat-card-content>--> 
-  <mat-card-actions>
-    <button mat-raised-button color="primary"
-            (click)="selectForm(form.formId)">
-      Fill Form
+  <nav class="mb-3">
+    <span class="text-muted">Dashboard</span>
+    <span class="mx-2">/</span>
+    <span class="fw-semibold">
+      Select Form
+    </span>
+  </nav>
+
+  <div class="mb-3 position-relative sticky-top bg-white py-3">
+
+    <!-- Back button -->
+    <button
+      mat-stroked-button
+      color="primary"
+      routerLink="/dashboard"
+      class="position-absolute start-0 top-0">
+      <mat-icon class="me-1">arrow_back</mat-icon>Dashboard
     </button>
-  </mat-card-actions>
+  
+    <!-- Centered header -->
+    <div class="text-center">
+      <h2 class="fw-bold text-primary">Select Form</h2>
+      <p class="text-muted">
+        Choose a form to fill, edit, or delete
+      </p>
+    </div>
+  
+  </div>
+  <!-- Forms List -->
+  <div class="row g-4">
 
-  <button
-  mat-icon-button
-  color="warn"  (click)="editForm(form.formId)">
-  <mat-icon>edit</mat-icon>
-</button>
+    <div class="col-md-4" *ngFor="let form of forms">
+      <div class="card h-100 shadow-sm border-0">
 
-<button
-mat-icon-button
-color="warn" (click)="deleteForm(form.formId)">
-<mat-icon>delete</mat-icon>
-</button>
-</mat-card>
+        <div class="card-body d-flex flex-column">
+
+          <!-- Form Title -->
+          <h5 class="card-title text-dark">
+            {{ form.formName }}
+          </h5>
+
+          <!-- Optional Description -->
+
+          <p class="card-text text-muted">
+            {{ form.description }}
+          </p>
+
+
+          <!-- Spacer -->
+          <div class="flex-grow-1"></div>
+
+          <!-- Actions -->
+          <div class="d-flex justify-content-between align-items-center mt-3">
+
+            <!-- Fill -->
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="selectForm(form.formId)">
+              Fill
+            </button>
+
+            <!-- Edit + Delete -->
+            <div class="d-flex gap-2">
+              <button
+                mat-icon-button
+                color="accent"
+                matTooltip="Edit Form"
+                (click)="editForm(form.formId)">
+                <mat-icon>edit</mat-icon>
+              </button>
+
+              <button
+                mat-icon-button
+                color="warn"
+                matTooltip="Delete Form"
+                (click)="deleteForm(form.formId)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>
