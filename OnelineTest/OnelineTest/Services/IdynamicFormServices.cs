@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OnelineTest.Dto;
+using OnelineTest.DTOs;
 
 namespace OnelineTest.Services
 {
