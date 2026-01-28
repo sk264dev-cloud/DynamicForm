@@ -12,6 +12,7 @@
         }
         public class FormFieldDto
         {
+            public int FieldId { get; set; }
             public string FieldLabel { get; set; }
             public string FieldType { get; set; }   // text, number, dropdown
             public bool IsRequired { get; set; }
