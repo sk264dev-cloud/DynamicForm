@@ -68,7 +68,8 @@
         {
             public int FormId { get; set; }
             public string FormName { get; set; }
-        }
+            public string Description { get; set; }
+    }
         public class FormSubmitDto
         {
             public int SubmissionId { get; set; }

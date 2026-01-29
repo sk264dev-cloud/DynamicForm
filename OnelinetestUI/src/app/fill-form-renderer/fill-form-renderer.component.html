@@ -111,6 +111,70 @@
                 </div>
               </div>
 
+              <div class="col-md-3" *ngIf="field.fieldType === 'number'">
+                <mat-form-field appearance="outline" class="w-100" [class.opacity-75]="isViewMode">
+                  <mat-label>{{ field.fieldLabel }}</mat-label>
+                  <input
+                    matInput
+                    type="number"
+                    [formControlName]="field.fieldId">
+              
+                  <mat-error
+                    *ngIf="form.get(field.fieldId.toString())?.touched &&
+                           form.get(field.fieldId.toString())?.hasError('required')">
+                    This field is required
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="col-md-3" *ngIf="field.fieldType === 'date'">
+                <mat-form-field appearance="outline" class="w-100" [class.opacity-75]="isViewMode">
+                  <mat-label>{{ field.fieldLabel }}</mat-label>
+              
+                  <input
+                    matInput
+                    [matDatepicker]="picker"
+                    [formControlName]="field.fieldId">
+              
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+              
+                  <mat-error
+                    *ngIf="form.get(field.fieldId.toString())?.touched &&
+                           form.get(field.fieldId.toString())?.hasError('required')">
+                    This field is required
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="col-md-12" *ngIf="field.fieldType === 'checkbox'">
+                <div class="border rounded p-3 bg-light">
+              
+                  <label class="fw-semibold mb-2 d-block">
+                    {{ field.fieldLabel }}
+                    <span *ngIf="field.isRequired" class="text-danger">*</span>
+                  </label>
+              
+                  <div class="d-flex flex-wrap gap-3">
+                    <mat-checkbox
+                      *ngFor="let opt of field.optionsJson | jsonParse"
+                      [checked]="form.get(field.fieldId.toString())?.value?.includes(opt.trim())"
+                      (change)="onCheckboxChange(field.fieldId, opt, $event.checked)"
+                      [disabled]="isViewMode">
+                      {{ opt }}
+                    </mat-checkbox>
+                  </div>
+              
+                  <div class="text-danger mt-1"
+                       *ngIf="form.get(field.fieldId.toString())?.touched &&
+                              form.get(field.fieldId.toString())?.hasError('required')">
+                    This field is required
+                  </div>
+              
+                </div>
+              </div>
+              
+
             </ng-container>
 
           </ng-container>

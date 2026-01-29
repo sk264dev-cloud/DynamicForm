@@ -7,6 +7,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 
 import { HttpClientModule } from '@angular/common/http';
@@ -20,6 +22,7 @@ import { FillFormComponent } from './fill-form/fill-form.component';
 import { FillFormRendererComponent } from './fill-form-renderer/fill-form-renderer.component';
 import { JsonParsePipe } from '../Pipes/json-parse.pipe';
 import { SubmissionsListComponent } from './submissions-list/submissions-list.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 @NgModule({
@@ -34,6 +37,7 @@ import { SubmissionsListComponent } from './submissions-list/submissions-list.co
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     ReactiveFormsModule,
 
@@ -44,7 +48,9 @@ import { SubmissionsListComponent } from './submissions-list/submissions-list.co
     MatCardModule,
     MatIconModule,
     HttpClientModule,
-    MatRadioModule
+    MatRadioModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
   ],
   providers: [
     provideClientHydration(),

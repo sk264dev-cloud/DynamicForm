@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DynamicFormService } from '../../Services/dynamic-form.service';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-fill-form-renderer',
@@ -60,17 +61,31 @@ export class FillFormRendererComponent implements OnInit {
     const group: any = {};
   
     this.fields.forEach(f => {
-      let defaultVal = '';
+      let defaultVal: any = '';
   
-      // ✅ set default values
-      if (f.fieldType === 'text' && f.defaultValue) {
-        defaultVal = f.defaultValue;
+      switch (f.fieldType) {
+        case 'text':
+        case 'dropdown':
+        case 'radio': 
+          defaultVal = f.defaultValue ?? '';
+          break;
+  
+        case 'checkbox': 
+          defaultVal = f.defaultValue ? f.defaultValue.split(',').map((x: string) => x.trim()) : []; 
+          break;
+
+        case 'number':
+          defaultVal =
+            f.defaultValue !== null && f.defaultValue !== undefined
+              ? Number(f.defaultValue)
+              : null;
+          break;
+  
+        case 'date':
+          defaultVal = f.defaultValue ? new Date(f.defaultValue) : null;
+          break;
       }
-  
-      if (f.fieldType === 'dropdown' && f.defaultValue) {
-        defaultVal = f.defaultValue;
-      }
-  
+
       group[f.fieldId] = [
         defaultVal,
         f.isRequired ? Validators.required : []
@@ -79,6 +94,7 @@ export class FillFormRendererComponent implements OnInit {
   
     this.form = this.fb.group(group);
   }
+  
 
   submit() {
     if (this.form.invalid) {
@@ -88,11 +104,27 @@ export class FillFormRendererComponent implements OnInit {
     const payload = {
       submissionId: this.isEditMode ? this.submissionId : 0,
       formId: this.formId,
-      values: this.fields.map(f => ({
-        valueId: f.valueId ?? 0,      
-        fieldId: f.fieldId,
-        value: this.form.value[f.fieldId]
-      }))
+      values: this.fields.map(f => {
+        let value = this.form.value[f.fieldId];
+    
+        if (f.fieldType === 'date' && value) {
+          value = this.formatDate(value);
+        }
+
+        if (f.fieldType === 'checkbox') {
+          if (Array.isArray(value) && value.length > 0) {
+            value = value.join(',');
+          } else {
+            value = ''; 
+          }
+        }
+    
+        return {
+          valueId: f.valueId ?? 0,
+          fieldId: f.fieldId,
+          value: value !== null && value !== undefined ? String(value) : null
+        };
+      })
     };
 
     this.dynamicFormService.submitForm(payload).subscribe({
@@ -129,9 +161,9 @@ export class FillFormRendererComponent implements OnInit {
         // 🔹 value priority:
         // submitted value > default value > empty
         const controlValue =
-          v.value !== null && v.value !== undefined && v.value !== ''
-            ? v.value
-            : (v.defaultValue ?? '');
+        v.value !== null && v.value !== undefined && v.value !== ''
+          ? this.mapValueByType(v.fieldType, v.value)
+          : this.mapValueByType(v.fieldType, v.defaultValue);
       
         group[v.fieldId] = [
           controlValue,
@@ -213,4 +245,65 @@ export class FillFormRendererComponent implements OnInit {
         break;
     }
   }
+
+  mapValueByType(type: string, value: any) {
+    if (value === null || value === undefined) return null;
+  
+    switch (type) {
+      case 'number':
+        return Number(value);
+  
+      case 'date':
+        return new Date(value); // yyyy-MM-dd → Date
+  
+      case 'checkbox':
+        // Handle all possible checkbox value formats
+      if (Array.isArray(value)) {
+        return value;
+      } else if (typeof value === 'string') {
+        // Parse comma-separated string to array
+        const parsedArray = value
+          .split(',')
+          .map((item: string) => item.trim())
+          .filter((item: string) => item !== '');
+        return parsedArray.length > 0 ? parsedArray : null;
+      }
+      else{
+        return null;
+      }
+  
+      default:
+        return value;
+    }
+  }
+
+  onCheckboxChange(fieldId: number, option: string, Checked: boolean ) {
+    const control = this.form.get(fieldId.toString());
+    if (!control) return;
+  
+    let value: string[] = control.value || [];
+  
+    if (Checked) {
+      if (!value.includes(option)) {
+        value.push(option);
+      }
+    } else {
+      value = value.filter(v => v !== option);
+    }
+  
+    control.setValue(value);
+    control.markAsTouched();
+  }
+
+  private formatDate(date: any): string {
+    const d = date instanceof Date ? date : new Date(date);
+  
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+  
+    return `${yyyy}-${mm}-${dd}`;
+  }
+  
+  
 }

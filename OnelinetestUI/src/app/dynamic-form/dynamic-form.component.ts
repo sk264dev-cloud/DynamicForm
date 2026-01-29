@@ -17,7 +17,10 @@ export class DynamicFormComponent  implements OnInit {
   fieldTypes = [
     { value: 'text', label: 'Text Box' },
     { value: 'radio', label: 'Radio Group' },
-    { value: 'dropdown', label: 'Dropdown' }
+    { value: 'dropdown', label: 'Dropdown' },
+    { value: 'number', label: 'Number' },
+    { value: 'date', label: 'Date Picker' },
+    { value: 'checkbox', label: 'Checkbox' },
   ];
 
   conditionOperators = [
@@ -86,7 +89,7 @@ export class DynamicFormComponent  implements OnInit {
         const type = fieldGroup.get('type')?.value;
         const options = fieldGroup.get('options') as FormArray;
     
-        if ((type === 'dropdown' || type === 'radio') && options.length === 0) {
+        if ((type === 'dropdown' || type === 'radio' || type === 'checkbox') && options.length === 0) {
           alert(`Please add at least one option for question ${i + 1}`);
           return;
         }
@@ -225,7 +228,7 @@ export class DynamicFormComponent  implements OnInit {
 
   showOptions(fieldIndex: number): boolean {
     const type = this.fields.at(fieldIndex).get('type')?.value;
-    return type === 'radio' || type === 'dropdown';
+    return type === 'radio' || type === 'dropdown' || type === 'checkbox';
   }
 
   saveForm() {
@@ -253,7 +256,7 @@ export class DynamicFormComponent  implements OnInit {
     const type = fieldGroup.get('type')?.value;
     const options = fieldGroup.get('options') as FormArray;
 
-    if ((type === 'dropdown' || type === 'radio') && options.length === 0) {
+    if ((type === 'dropdown' || type === 'radio' || type === 'checkbox') && options.length === 0) {
       alert(`Please add at least one option for question ${i + 1}`);
       return;
     }
@@ -346,11 +349,10 @@ export class DynamicFormComponent  implements OnInit {
         fieldLabel: f.label,
         fieldType: f.type,
         isRequired: f.required,
-        defaultValue:  f.type === 'text'
-        ? f.defaultValue
-        : f.type === 'dropdown'
+        defaultValue:
+        (f.type === 'dropdown' || f.type === 'radio' || f.type === 'checkbox')
           ? f.options?.find((o: any) => o.isDefault)?.value ?? null
-          : null,
+          :  String(f.defaultValue ?? ''),
         optionsJson: f.options?.length ? JSON.stringify(f.options.map((o: any) => o.value)) : null,
         sortOrder: index + 1,
         isActive: f.isActive ?? true
@@ -454,5 +456,22 @@ export class DynamicFormComponent  implements OnInit {
 
     
   }
+
+  onDefaultDateChange(date: Date | null, fieldIndex: number) {
+    if (!date) {
+      this.fields.at(fieldIndex).get('defaultValue')?.setValue(null);
+      return;
+    }
+  
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+  
+    const formatted = `${yyyy}-${mm}-${dd}`;
+  
+    // 🔥 store string instead of Date
+    this.fields.at(fieldIndex).get('defaultValue')?.setValue(formatted);
+  }
+  
     
 }

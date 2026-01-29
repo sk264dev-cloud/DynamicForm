@@ -187,7 +187,8 @@ namespace OnelineTest.Services
                     .Select(f => new FormListDto
                     {
                         FormId = f.FormId,
-                        FormName = f.FormName
+                        FormName = f.FormName,
+                        Description = f.Description
                     })
                     .ToListAsync();
 
